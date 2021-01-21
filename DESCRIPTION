@@ -1,15 +1,13 @@
 Package: egipto21
-Title: Utilidades para los datos del mundial de Egipto 2021
+Title: Utilities for the Handball Men's World Championship Egypt 2021 data
 Version: 0.0.1
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Valery",
+           family = "Zúñiga",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to
-    pick a license
+           email = "telaroz@gmail.com")
+Description: Tidy play by play data, scrape the .pdf files from the website and more.
+License: GPL
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
