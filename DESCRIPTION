@@ -24,4 +24,6 @@ Imports: data.table,
          pdftools,
          stringr,
          readr,
-         purrr
+         purrr,
+         xml2,
+         rvest
