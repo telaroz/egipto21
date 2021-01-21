@@ -155,7 +155,7 @@ generar_pbp_tidy <- function(input){
     tabla[stringr::str_detect(accion, '\\bShot\\b|Penalty shot') & stringr::str_detect(accion, 'Goal', negate = TRUE) , ':='(tiro_numero = numero,
                                                                                                                              tipo_de_tiro = stringr::str_remove(accion, paste0(jugadores$nombre_planilla, collapse = '|')))]
 
-    desc_tiros <- egipto2021::descripcion_tiros
+    desc_tiros <- egipto21::descripcion_tiros
 
     tabla[, posicion_marco := stringr::str_extract(accion, paste0(desc_tiros$posicion_marco[desc_tiros$posicion_marco != ''], collapse = '|'))]
     tabla[, posicion_tiro := stringr::str_extract(accion, paste0(desc_tiros$posicion_tiro[desc_tiros$posicion_tiro != ''], collapse = '|'))]
@@ -295,7 +295,7 @@ generar_pbp_tidy <- function(input){
 
   listo[, numero_de_posesion_preliminar := numero_de_posesion]
 
-  purrr::walk(c('posesion', 'numero_de_posesion', 'inicio_posesion', 'fin_posesion'), ~ egipto2021::llenar_nas(listo, .x))
+  purrr::walk(c('posesion', 'numero_de_posesion', 'inicio_posesion', 'fin_posesion'), ~ egipto21::llenar_nas(listo, .x))
 
 
   listo <- listo[accion != '', .(id_partido = id, tiempo, tiempo_numerico, mitad, accion, numero, equipo,
