@@ -295,8 +295,22 @@ generar_pbp_tidy <- function(input){
 
   listo[, numero_de_posesion_preliminar := numero_de_posesion]
 
-  purrr::walk(c('posesion', 'numero_de_posesion', 'inicio_posesion', 'fin_posesion'), ~ egipto21::llenar_nas(listo, .x))
+  primera_mitad <- listo[mitad == 1]
+  segunda_mitad <- listo[mitad == 2]
 
+  purrr::walk(c('posesion', 'numero_de_posesion', 'inicio_posesion', 'fin_posesion'), ~ llenar_nas(primera_mitad, .x))
+  purrr::walk(c('posesion', 'numero_de_posesion', 'inicio_posesion', 'fin_posesion'), ~ llenar_nas(segunda_mitad, .x))
+
+  listo <- rbind(primera_mitad, segunda_mitad)
+
+  # Quitar la información de posesiones en la información de quién es el portero
+
+  listo[stringr::str_detect(tiempo, '0:00') & stringr::str_detect(accion, 'Goalkeeper'),
+        ':='(inicio_posesion = NA, fin_posesion = NA,
+             sin_portero = NA, cantidad_jugadores_campo_real = NA)]
+  listo[stringr::str_detect(tiempo, '30:00') & stringr::str_detect(accion, 'Goalkeeper'),
+        ':='(inicio_posesion = NA, fin_posesion = NA,
+             sin_portero = NA, cantidad_jugadores_campo_real = NA)]
 
   listo <- listo[accion != '', .(id_partido = id, tiempo, tiempo_numerico, mitad, accion, numero, equipo,
                                  portero, asistencia_numero, gol_numero, asistencia_numero,
