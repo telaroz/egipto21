@@ -206,7 +206,7 @@ generar_pbp_tidy <- function(input){
 
     tabla[, cantidad_jugadores_campo_real := cantidad_jugadores_campo + cantidad_suspendidos + sin_portero]
     tabla[, cantidad_maxima_jugadores := cantidad_jugadores_campo + cantidad_suspendidos]
-    tabla[, cantidad_jugadores_campo_real := pmin(cantidad_jugadores_campo_real, cantidad_maxima_jugadores)]
+    tabla[, cantidad_jugadores_campo_real := pmin(cantidad_jugadores_campo_real, (cantidad_maxima_jugadores + 1))]
     tabla <- tabla[order(tiempo_numerico)]
 
     tabla[,cantidad_jugadores_campo := NULL]
