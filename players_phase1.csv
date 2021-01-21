@@ -1,4 +1,4 @@
-id_partido,equipo,numero,jugador
+match_id,team,number,player
 1,CHI,1,BARRIENTOS Felipe
 1,CHI,10,FEUCHTMANN Emil
 1,CHI,11,SALINAS Esteban
