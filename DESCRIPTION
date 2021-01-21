@@ -19,4 +19,9 @@ Depends:
     magrittr,
     R (>= 2.10)
 Imports: data.table,
-         magrittr
+         magrittr,
+         tabulizer,
+         pdftools,
+         stringr,
+         readr,
+         purrr
