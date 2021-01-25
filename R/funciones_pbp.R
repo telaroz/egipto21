@@ -33,7 +33,8 @@ generar_pbp_tidy <- function(input){
 
   if(length(pbp_limpio) != 0){
     pbp_limpio <- pbp_limpio %>%
-      purrr::when(ncol(.) == 8 ~ .[, V7 := paste0(V7, V8)], ~ .) %>%
+      purrr::map_if( ~ ncol(.) == 6, ~.[, V7 := '']) %>%
+      purrr::map_if(~ ncol(.) == 8, ~ .[, V7 := paste0(V7, V8)]) %>%
       purrr::map_df(~ .x[,1:7]) %>%
       data.table::setnames(colnames(.), c('tiempo', 'numero_casa', 'accion_casa', 'marcador', 'ventaja_casa', 'numero_visita', 'accion_visita'))
 
