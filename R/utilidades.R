@@ -26,7 +26,7 @@ llenar_nas <- function(tabla, columna){
 #'
 #' @examples scrape_from_ihf(enlace = 'https://www.ihf.info/competitions/men/308/27th-ihf-men039s-world-championship-2021/22415/match-center/23765', carpeta = 'matches')
 scrape_from_ihf <- function(enlace, carpeta){
-  pagina %>%
+  enlace %>%
     xml2::read_html() %>%
     rvest::html_nodes("a") %>%
     rvest::html_attr("href") %>%
