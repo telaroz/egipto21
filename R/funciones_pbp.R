@@ -176,6 +176,7 @@ generar_pbp_tidy <- function(input){
 
     tabla[stringr::str_detect(accion, 'Turnover'), turnover := numero]
     tabla[stringr::str_detect(accion, 'Steal'), robo := numero]
+    tabla[stringr::str_detect(accion, 'Technical'), falta_tecnica := numero]
     tabla[stringr::str_detect(accion, '2-minutes suspension'), suspension := numero]
 
 
@@ -219,8 +220,32 @@ generar_pbp_tidy <- function(input){
 
 
   #final <- cbind(func_tidy_equipo(pbpc), func_tidy_equipo(pbpv, casa = FALSE))
-  final <- rbind(func_tidy_pbp_por_equipo(tabla = pbpc, casa = TRUE, nombre_equipo = nombres_equipos[1]),
-                 func_tidy_pbp_por_equipo(tabla = pbpv, casa = FALSE, nombre_equipo = nombres_equipos[2]))
+  casa <- func_tidy_pbp_por_equipo(tabla = pbpc, casa = TRUE, nombre_equipo = nombres_equipos[1])
+  visita <- func_tidy_pbp_por_equipo(tabla = pbpv, casa = FALSE, nombre_equipo = nombres_equipos[2])
+
+  casa[is.na(gol), gol := 0]
+  visita[is.na(gol), gol := 0]
+
+
+  casa[visita, portero_rival := i.portero, on = 'no_jugada']
+  visita[casa, portero_rival := i.portero, on = 'no_jugada']
+
+  casa[, acumulada_goles_casa := cumsum(gol)]
+  visita[, acumulada_goles_visita := cumsum(gol)]
+
+  casa[, acumulada_goles_visita := visita$acumulada_goles_visita]
+  visita[, acumulada_goles_casa := casa$acumulada_goles_casa]
+
+  casa[, marcador := paste(acumulada_goles_casa, acumulada_goles_visita, sep = ' - ')]
+  visita[, marcador := paste(acumulada_goles_casa, acumulada_goles_visita, sep = ' - ')]
+
+
+  final <- rbind(casa, visita)
+  final[, diferencia := eval(parse(text = marcador)), 1:nrow(final)]
+
+  final[, velocidad_tiro := as.numeric(stringr::str_extract(stringr::str_extract(accion, '\\d{1,3} km/h$'), '\\d{1,3}'))]
+  final[is.na(gol), gol := 0]
+
 
   final <- final[order(mitad, tiempo_numerico)]
 
@@ -314,12 +339,12 @@ generar_pbp_tidy <- function(input){
              sin_portero = NA, cantidad_jugadores_campo_real = NA)]
 
   listo <- listo[accion != '', .(id_partido = id, tiempo, tiempo_numerico, mitad, accion, numero, equipo,
-                                 portero, asistencia_numero, gol_numero, asistencia_numero,
-                                 tiro_numero, gol, posicion_marco, posicion_tiro, post, saved,
+                                 portero, portero_rival, asistencia_numero, gol_numero, asistencia_numero,
+                                 tiro_numero, gol, velocidad_tiro, posicion_marco, posicion_tiro, post, saved,
                                  posicion_marco_vertical, posicion_marco_horizontal, numero_causa_7m,
-                                 numero_recibe_7m, turnover, robo, suspension, es_casa, equipo, cantidad_suspendidos,
+                                 numero_recibe_7m, turnover, falta_tecnica, robo, suspension, es_casa, equipo, cantidad_suspendidos,
                                  sin_portero, cantidad_jugadores_campo = cantidad_jugadores_campo_real, posesion,
-                                 numero_posesion = numero_de_posesion, inicio_posesion, fin_posesion)]
+                                 numero_posesion = numero_de_posesion, inicio_posesion, fin_posesion, marcador, diferencia)]
 
     return(listo)
 }
