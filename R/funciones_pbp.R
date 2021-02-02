@@ -255,7 +255,7 @@ generar_pbp_tidy <- function(input){
   final[is.na(gol), gol := 0]
 
 
-  final <- final[order(mitad, tiempo_numerico)]
+  final <- final[order(mitad, tiempo_numerico, marcador)]
 
   final[, linea := 1:.N]
 
