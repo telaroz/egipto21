@@ -139,6 +139,8 @@ generar_pbp_tidy <- function(input){
 
     tabla[stringr::str_detect(tiempo, '0:00') & stringr::str_detect(accion, 'Goalkeeper'), portero := numero]
     tabla[stringr::str_detect(tiempo, '30:00') & stringr::str_detect(accion, 'Goalkeeper'), portero := numero]
+    tabla[stringr::str_detect(tiempo, '60:00') & stringr::str_detect(accion, 'Goalkeeper'), portero := numero]
+    tabla[stringr::str_detect(tiempo, '70:00') & stringr::str_detect(accion, 'Goalkeeper'), portero := numero]
 
     tabla[stringr::str_detect(accion, 'Empty goal'), portero := 'Empty goal']
     tabla[stringr::str_detect(accion, 'Goalkeeper back'), portero := numero]
@@ -307,7 +309,10 @@ generar_pbp_tidy <- function(input){
 
 
   pos[numero_de_posesion == 1, inicio_posesion := '0:00']
-  pos[numero_de_posesion == max(numero_de_posesion), fin_posesion := '60:00']
+  pos[numero_de_posesion == max(numero_de_posesion), fin_posesion :=
+        data.table::fcase(max(mitad) == 2,'60:00',
+                          max(mitad) == 3, '70:00',
+                          max(mitad) == 4, '80:00')]
 
   pos[, c('lt', 'nlt', 'numero_posesion_anterior') := NULL]
 
@@ -323,11 +328,15 @@ generar_pbp_tidy <- function(input){
 
   primera_mitad <- listo[mitad == 1]
   segunda_mitad <- listo[mitad == 2]
+  tercera_mitad <- listo[mitad == 3]
+  cuarta_mitad <- listo[mitad == 4]
 
-  purrr::walk(c('posesion', 'numero_de_posesion', 'inicio_posesion', 'fin_posesion'), ~ llenar_nas(primera_mitad, .x))
-  purrr::walk(c('posesion', 'numero_de_posesion', 'inicio_posesion', 'fin_posesion'), ~ llenar_nas(segunda_mitad, .x))
+  purrr::walk(c('posesion', 'numero_de_posesion', 'inicio_posesion', 'fin_posesion'), ~ egipto21::llenar_nas(primera_mitad, .x))
+  purrr::walk(c('posesion', 'numero_de_posesion', 'inicio_posesion', 'fin_posesion'), ~ egipto21::llenar_nas(segunda_mitad, .x))
+  purrr::walk(c('posesion', 'numero_de_posesion', 'inicio_posesion', 'fin_posesion'), ~ egipto21::llenar_nas(tercera_mitad, .x))
+  purrr::walk(c('posesion', 'numero_de_posesion', 'inicio_posesion', 'fin_posesion'), ~ egipto21::llenar_nas(cuarta_mitad, .x))
 
-  listo <- rbind(primera_mitad, segunda_mitad)
+  listo <- rbind(primera_mitad, segunda_mitad, tercera_mitad, cuarta_mitad)
 
   # Quitar la información de posesiones en la información de quién es el portero
 
@@ -335,6 +344,14 @@ generar_pbp_tidy <- function(input){
         ':='(inicio_posesion = NA, fin_posesion = NA,
              sin_portero = NA, cantidad_jugadores_campo_real = NA)]
   listo[stringr::str_detect(tiempo, '30:00') & stringr::str_detect(accion, 'Goalkeeper'),
+        ':='(inicio_posesion = NA, fin_posesion = NA,
+             sin_portero = NA, cantidad_jugadores_campo_real = NA)]
+
+  listo[stringr::str_detect(tiempo, '60:00') & stringr::str_detect(accion, 'Goalkeeper'),
+        ':='(inicio_posesion = NA, fin_posesion = NA,
+             sin_portero = NA, cantidad_jugadores_campo_real = NA)]
+
+  listo[stringr::str_detect(tiempo, '70:00') & stringr::str_detect(accion, 'Goalkeeper'),
         ':='(inicio_posesion = NA, fin_posesion = NA,
              sin_portero = NA, cantidad_jugadores_campo_real = NA)]
 
