@@ -85,10 +85,16 @@ generar_pbp_tidy <- function(input){
 
 
 
-  # Agregar si 1ero o 2do tiempo
+  # Agregar si 1ero o 2do tiempo o tiempos extra
 
-  pbp[stringr::str_detect(accion_casa, 'Goalkeeper') & stringr::str_detect(accion_visita, 'Goalkeeper'),
+  pbp[tiempo < '59:59' &  stringr::str_detect(accion_casa, 'Goalkeeper') & stringr::str_detect(accion_visita, 'Goalkeeper'),
       mitad := data.table::fifelse(tiempo == '0:00', 1, 2)]
+
+  pbp[stringr::str_detect(accion_casa, 'Goalkeeper') & stringr::str_detect(accion_visita, 'Goalkeeper') & tiempo == '60:00',
+      mitad := 3]
+
+  pbp[stringr::str_detect(accion_casa, 'Goalkeeper') & stringr::str_detect(accion_visita, 'Goalkeeper') & tiempo == '70:00',
+      mitad := 4]
 
 
   pbp[, tiempo_numerico := as.numeric(lubridate::ms(tiempo))]
