@@ -277,7 +277,9 @@ generar_pbp_tidy <- function(input){
 
   pos <- pos[accion != ''
   ][tiempo_numerico != 0
-  ][!(tiempo_numerico == 1800 & stringr::str_detect(accion, 'Goalkeeper'))]
+  ][!(tiempo_numerico == 1800 & stringr::str_detect(accion, 'Goalkeeper'))
+  ][!(tiempo_numerico == 3600 & stringr::str_detect(accion, 'Goalkeeper'))
+  ][!(tiempo_numerico == 4200 & stringr::str_detect(accion, 'Goalkeeper'))]
 
 
 
