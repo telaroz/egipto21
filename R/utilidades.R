@@ -25,12 +25,13 @@ llenar_nas <- function(tabla, columna){
 #' @export
 #'
 #' @examples scrape_from_ihf(enlace = 'https://www.ihf.info/competitions/men/308/27th-ihf-men039s-world-championship-2021/22415/match-center/23765', carpeta = 'matches')
-scrape_from_ihf <- function(enlace, carpeta){
+scrape_from_ihf <- function(enlace, carpeta, from_archive = FALSE){
   enlace %>%
     xml2::read_html() %>%
     rvest::html_nodes("a") %>%
     rvest::html_attr("href") %>%
     stringr::str_subset("\\.pdf|\\.PDF") %>%
+    purrr::map_if(.f = ~ paste0('https://archive.ihf.info', .), .p = rep(from_archive, length(.)) == rep(TRUE, length(.))) %>%
+    unlist() %>%
     purrr::walk2(., paste0(carpeta,'/', basename(.) %>% stringr::str_remove('[?=].*')), download.file, mode = "wb")
-
 }
