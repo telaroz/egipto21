@@ -6,7 +6,7 @@
 #' @export
 #'
 #' @examples generar_pbp_tidy('01pbp.pdf')
-generar_pbp_tidy <- function(input){
+generar_pbp_tidy <- function(input, two_min = '2-minutes suspension'){
   texto <- pdftools::pdf_text(input) %>%
     readr::read_lines()
 
@@ -185,7 +185,7 @@ generar_pbp_tidy <- function(input){
     tabla[stringr::str_detect(accion, 'Turnover'), turnover := numero]
     tabla[stringr::str_detect(accion, 'Steal'), robo := numero]
     tabla[stringr::str_detect(accion, 'Technical'), falta_tecnica := numero]
-    tabla[stringr::str_detect(accion, '2-minutes suspension'), suspension := numero]
+    tabla[stringr::str_detect(accion, two_min), suspension := numero]
 
 
 
